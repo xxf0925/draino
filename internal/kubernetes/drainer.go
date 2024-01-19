@@ -301,6 +301,7 @@ func (d *APICordonDrainer) Drain(n *core.Node) error {
 	abort := make(chan struct{})
 	errs := make(chan error, 1)
 	for _, pod := range pods {
+		d.l.Info("evicting pod", zap.String("podName:", pod.GetName()), zap.String("namespace:", pod.GetNamespace()))
 		go d.evict(pod, abort, errs)
 	}
 	// This will _eventually_ abort evictions. Evictions may spend up to

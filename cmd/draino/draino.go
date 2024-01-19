@@ -203,6 +203,7 @@ func main() {
 
 	nodeLabelFilter = cache.FilteringResourceEventHandler{FilterFunc: nodeLabelFilterFunc, Handler: h}
 
+	// create node events watcher use DrainingResourceEventHandler
 	nodes := kubernetes.NewNodeWatch(cs, nodeLabelFilter)
 
 	id, err := os.Hostname()
@@ -234,6 +235,7 @@ func main() {
 		Callbacks: leaderelection.LeaderCallbacks{
 			OnStartedLeading: func(ctx context.Context) {
 				log.Info("node watcher is running")
+				// start nodes watch
 				kingpin.FatalIfError(await(nodes), "error watching")
 			},
 			OnStoppedLeading: func() {
